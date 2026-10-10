@@ -1,35 +1,42 @@
+import axios from 'axios'
+
 const BASE_URL = ''
 
 async function request(url, opciones = {}) {
   const token = localStorage.getItem('token')
-  const headers = { 'Content-Type': 'application/json', ...opciones.headers }
-  if (token) headers.Authorization = `Bearer ${token}`
-
-  const respuesta = await fetch(`${BASE_URL}${url}`, { ...opciones, headers })
-  const data = await respuesta.json().catch(() => ({}))
-
-  if (!respuesta.ok) {
-    const error = new Error(data.message || 'Error de conexión con el servidor')
-    error.status = respuesta.status
-    throw error
+  const config = { url: `${BASE_URL}${url}`, method: opciones.method, ...opciones }
+  if (token) {
+    config.headers = { Authorization: `Bearer ${token}`, ...opciones.headers }
   }
-  return data
+
+  try {
+    const respuesta = await axios(config)
+    return respuesta.data
+  } catch (error) {
+    const mensaje =
+      error.response?.data?.message ||
+      error.message ||
+      'Error de conexión con el servidor'
+    const err = new Error(mensaje)
+    err.status = error.response?.status
+    throw err
+  }
 }
 
 export const loginRequest = (datos) =>
-  request('/usuarios/login', { method: 'POST', body: JSON.stringify(datos) })
+  request('/usuarios/login', { method: 'POST', data: datos })
 
 export const registrarUsuario = (datos) =>
-  request('/usuarios', { method: 'POST', body: JSON.stringify(datos) })
+  request('/usuarios', { method: 'POST', data: datos })
 
 export const getCategorias = () =>
   request('/categorias')
 
 export const crearCategoria = (descripcion) =>
-  request('/categorias', { method: 'POST', body: JSON.stringify({ descripcion }) })
+  request('/categorias', { method: 'POST', data: { descripcion } })
 
 export const actualizarCategoria = (categoria) =>
-  request('/categorias', { method: 'PUT', body: JSON.stringify(categoria) })
+  request('/categorias', { method: 'PUT', data: categoria })
 
 export const eliminarCategoria = (id) =>
   request(`/categorias/${id}`, { method: 'DELETE' })
@@ -41,4 +48,4 @@ export const getProductosPorCategoria = (categoria) =>
   request(`/productos/${categoria}`)
 
 export const crearProducto = (datos) =>
-  request('/productos', { method: 'POST', body: JSON.stringify(datos) })
+  request('/productos', { method: 'POST', data: datos })

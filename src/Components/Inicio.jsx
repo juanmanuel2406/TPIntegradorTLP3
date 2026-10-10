@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { getCategorias, getProductos, getProductosPorCategoria } from '../api'
 import { useAuth } from '../Context/useAuth'
+import ProductoNuevo from './ProductoNuevo'
 
 function formatearPrecio(precio) {
   return Number(precio).toLocaleString('es-AR', {
@@ -17,6 +17,7 @@ function Inicio() {
   const [categoriaSel, setCategoriaSel] = useState('')
   const [error, setError] = useState(null)
   const [cargando, setCargando] = useState(true)
+  const [formularioVisible, setFormularioVisible] = useState(false)
 
   const cargarProductos = async (categoriaId) => {
     setError(null)
@@ -57,6 +58,10 @@ function Inicio() {
     }
   }, [])
 
+  useEffect(() => {
+    console.log('Formulario de nuevo producto:', formularioVisible ? 'visible' : 'oculto')
+  }, [formularioVisible])
+
   const handleCategoria = (e) => {
     const valor = e.target.value
     setCategoriaSel(valor)
@@ -70,14 +75,25 @@ function Inicio() {
           Productos
         </h1>
         {esAdmin && (
-          <Link
-            to="/productos/nuevo"
+          <button
+            onClick={() => setFormularioVisible(!formularioVisible)}
             className="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white font-semibold tracking-wide px-5 py-2.5 rounded-xl cursor-pointer shadow-lg shadow-blue-500/40 hover:shadow-xl hover:shadow-blue-500/60 transition-all duration-300 ease-out hover:-translate-y-1 active:scale-95"
           >
-            + Nuevo Producto
-          </Link>
+            {formularioVisible ? 'Ocultar Nuevo Producto' : '+ Nuevo Producto'}
+          </button>
         )}
       </div>
+
+      {formularioVisible && (
+        <div className="mb-6 flex justify-center">
+          <ProductoNuevo
+            onCreado={() => {
+              setFormularioVisible(false)
+              cargarProductos()
+            }}
+          />
+        </div>
+      )}
 
       <div className="mb-6">
         <select

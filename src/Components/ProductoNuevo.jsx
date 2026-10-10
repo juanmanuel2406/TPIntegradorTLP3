@@ -3,12 +3,24 @@ import { useNavigate } from 'react-router-dom'
 import { crearProducto, getCategorias } from '../api'
 import Boton from './Boton'
 
-function ProductoNuevo() {
+function ProductoNuevo({ onCreado }) {
   const navigate = useNavigate()
   const [categorias, setCategorias] = useState([])
   const [form, setForm] = useState({ descripcion: '', precio: '', categoria: '' })
   const [error, setError] = useState(null)
   const [cargando, setCargando] = useState(false)
+
+  useEffect(() => {
+    console.log('ProductoNuevo: Componente Montado')
+
+    return () => {
+      console.log('ProductoNuevo: Componente Desmontado')
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('ProductoNuevo: cambios en el formulario', form)
+  }, [form])
 
   useEffect(() => {
     getCategorias()
@@ -30,7 +42,11 @@ function ProductoNuevo() {
         precio: Number(form.precio),
         categoria: Number(form.categoria),
       })
-      navigate('/')
+      if (onCreado) {
+        onCreado()
+      } else {
+        navigate('/')
+      }
     } catch (err) {
       setError(err.message)
     } finally {

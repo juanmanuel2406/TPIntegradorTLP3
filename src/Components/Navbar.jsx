@@ -17,24 +17,14 @@ function Navbar() {
             </Link>
           </li>
           {esAdmin && (
-            <>
-              <li>
-                <Link
-                  to="/categorias"
-                  className="text-white font-semibold tracking-wide transition-colors duration-300 hover:text-blue-200"
-                >
-                  Categorías
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/productos/nuevo"
-                  className="text-white font-semibold tracking-wide transition-colors duration-300 hover:text-blue-200"
-                >
-                  Nuevo Producto
-                </Link>
-              </li>
-            </>
+            <li>
+              <Link
+                to="/categorias"
+                className="text-white font-semibold tracking-wide transition-colors duration-300 hover:text-blue-200"
+              >
+                Categorías
+              </Link>
+            </li>
           )}
         </ul>
         <ul className="flex items-center gap-6">

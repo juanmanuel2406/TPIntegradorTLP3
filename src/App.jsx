@@ -4,7 +4,6 @@ import Inicio from './Components/Inicio'
 import Login from './Components/Login'
 import Registro from './Components/Registro'
 import Categorias from './Components/Categorias'
-import ProductoNuevo from './Components/ProductoNuevo'
 import { useAuth } from './Context/useAuth'
 
 function RequireAdmin({ children }) {
@@ -27,14 +26,6 @@ function App() {
             element={
               <RequireAdmin>
                 <Categorias />
-              </RequireAdmin>
-            }
-          />
-          <Route
-            path="/productos/nuevo"
-            element={
-              <RequireAdmin>
-                <ProductoNuevo />
               </RequireAdmin>
             }
           />
